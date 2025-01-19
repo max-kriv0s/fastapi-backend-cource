@@ -1,1 +1,3 @@
-# fastapi-backend-cource
+# Погружение в backend разработку на FastAPI
+
+Проект написанный по курсу "Погружение в backend разработку на FastAPI" от Артём Шумейко
