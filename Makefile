@@ -35,6 +35,12 @@ docker-up: ## docker compose up -d
 docker-down: ## docker compose down
 	docker compose down
 
+celery-start: ## start celery process
+	celery -A app.tasks.celery_app:celery_app worker --loglevel=INFO
+
+celery-flower: ## start flower
+	celery -A app.tasks.celery_app:celery_app flower
+
 help: ## Show this help message
 	@echo "Usage: make [command]"
 	@echo ""

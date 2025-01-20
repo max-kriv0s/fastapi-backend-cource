@@ -4,6 +4,7 @@ from datetime import date
 from app.bookings.schemas import SBooking, SBookingInfo
 from app.bookings.dao import BookingDAO
 from app.exceptions import RoomCannotBeBooked
+from app.tasks.tasks import send_booking_confirmation_email
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 
@@ -30,6 +31,10 @@ async def add_booking(
     booking = await BookingDAO.add(user.id, room_id, date_from, date_to)
     if not booking:
         raise RoomCannotBeBooked
+    
+    booking_dick = SBooking.model_validate(booking).model_dump()
+    send_booking_confirmation_email.delay(booking_dick, user.email)
+    
     return booking
 
 @router.delete("/{booking_id}", status_code=status.HTTP_204_NO_CONTENT)

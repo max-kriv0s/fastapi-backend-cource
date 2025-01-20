@@ -13,7 +13,7 @@ from typing import Callable
 from app.config import settings
 
 def get_redis_url() -> str:
-    return  f'redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}'
+    return  f'redis://{settings.REDIS_USER}:{settings.REDIS_USER_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}'
 
 def get_redis_connection() -> Redis:
     return redis.from_url(
