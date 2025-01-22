@@ -1,5 +1,6 @@
 import asyncio
 from app.tasks.celery_app import celery_app
+from app.tasks.reminders.bookings import remind_of_booking
 
 # celery beat
 @celery_app.task(name="email.booking_reminder_1day")

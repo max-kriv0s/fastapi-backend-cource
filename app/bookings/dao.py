@@ -6,7 +6,7 @@ from sqlalchemy.orm import joinedload
 from app.bookings.models import Bookings
 from app.dao.base import BaseDAO
 from app.hotels.rooms.models import Rooms
-from app.database import async_session_maker
+from app.database import async_session_maker, async_session_maker_nullpool
 
 
 class BookingDAO(BaseDAO):
