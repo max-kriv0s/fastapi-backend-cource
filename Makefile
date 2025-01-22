@@ -35,8 +35,11 @@ docker-up: ## docker compose up -d
 docker-down: ## docker compose down
 	docker compose down
 
-celery-start: ## start celery process
+celery: ## start celery process
 	celery -A app.tasks.celery_app:celery_app worker --loglevel=INFO
+
+celery-beat: ## start celery beat process
+	celery -A app.tasks.celery_app:celery_app worker --loglevel=INFO -B
 
 celery-flower: ## start flower
 	celery -A app.tasks.celery_app:celery_app flower
