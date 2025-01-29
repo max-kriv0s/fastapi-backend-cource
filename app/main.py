@@ -3,10 +3,14 @@ from fastapi import FastAPI, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from sqladmin import Admin
+from app.admin.auth import authentication_backend
+
 from typing import Optional
 from datetime import date
 from pydantic import BaseModel
 
+from app.admin.view import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
 from app.cache.cache import get_redis_connection
 
 from app.bookings.router import router as router_bookings
@@ -16,6 +20,8 @@ from app.hotels.rooms.router import router as router_rooms
 from app.images.router import router as router_images
 
 from app.pages.router import router as router_pages
+
+from app.database import engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -60,24 +66,9 @@ app.add_middleware(
     ]
 )
 
-class SHotel(BaseModel):
-    address: str
-    name: str
-    stars: int
-
-
-class HotelSearchArgs:
-    def __init__(
-        self,
-        location: str, 
-        date_from: date, 
-        date_to: date, 
-        has_spa: Optional[bool] = None,
-        stars: Optional[int] = Query(None, ge=1, le=5)
-    ):
-        self.location = location
-        self.date_from = date_from
-        self.date_to = date_to
-        self.has_spa = has_spa
-        self.stars = stars
+admin = Admin(app, engine, authentication_backend=authentication_backend)
+admin.add_view(UsersAdmin)
+admin.add_view(HotelsAdmin)
+admin.add_view(RoomsAdmin)
+admin.add_view(BookingsAdmin)
 

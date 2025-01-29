@@ -1,5 +1,6 @@
 from sqlalchemy import JSON, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.bookings.models import Bookings
 from app.database import Base
 
 class Rooms(Base):
@@ -13,3 +14,9 @@ class Rooms(Base):
     services: Mapped[list[str]] = mapped_column(JSON)
     quantity: Mapped[int]
     image_id: Mapped[int]
+    
+    hotel: Mapped['Hotels'] = relationship(back_populates='rooms')
+    bookings: Mapped[list['Bookings']] = relationship(back_populates='room')
+    
+    def __str__(self):
+        return f'{self.name}'
