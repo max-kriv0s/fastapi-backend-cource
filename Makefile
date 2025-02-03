@@ -44,6 +44,9 @@ celery-beat: ## start celery beat process
 celery-flower: ## start flower
 	celery -A app.tasks.celery_app:celery_app flower
 
+test: # start pytest
+	pytest -v -s
+
 help: ## Show this help message
 	@echo "Usage: make [command]"
 	@echo ""
