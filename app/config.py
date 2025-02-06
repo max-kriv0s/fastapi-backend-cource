@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     MODE: Literal['DEV', 'TEST', 'PROD']
+    LOG_LEVEL: Literal['INFO', 'DEBUG']
     
     DB_HOST: str
     DB_PORT: int
