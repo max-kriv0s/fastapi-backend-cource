@@ -29,7 +29,7 @@ def redis_cache(expire: int):
            # Получаем объект Redis из app.state.cache через запрос (Request)
             cache = getattr(request.app.state, "cache", None)  # Получаем Redis из состояния приложения
             if not cache:
-                await func(*args, **kwargs)
+                return await func(request=request, *args, **kwargs)
             
             # Собираем все параметры запроса (например, location, date_from, date_to)
             # Мы будем строить ключ кеша на основе всех параметров запроса
