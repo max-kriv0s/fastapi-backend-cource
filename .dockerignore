@@ -1,0 +1,10 @@
+docker-compose*
+.pytest_cache
+.git
+.gitignore
+.dockerignore
+.deploy/
+.env
+data/
+redisdata/
+.venv

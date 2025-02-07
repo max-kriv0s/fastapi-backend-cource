@@ -6,6 +6,7 @@ from app.cache.cache import redis_cache
 from app.exceptions import HotelNotFoundException
 from app.hotels.schemas import SHotel, SHotelInfo
 from app.hotels.dao import HotelDAO
+from app.logger import logger
 
 
 router = APIRouter(
@@ -21,7 +22,12 @@ async def get_hotel_by_location(
    date_to: date,
    request: Request
 ) -> list[SHotelInfo]:
-   return await HotelDAO.find_all(location=location, date_from=date_from, date_to=date_to)
+   try:
+     logger.info(f"Received request for hotels in {location} from {date_from} to {date_to}")
+     return await HotelDAO.find_all(location=location, date_from=date_from, date_to=date_to)
+   except Exception as e:
+        logger.error(f"Error in get_hotels: {e}", exc_info=True)
+        raise
 
 @router.get("/id/{hotel_id}", include_in_schema=True)
 # Этот эндпоинт используется для фронтенда, когда мы хотим отобразить все

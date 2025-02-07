@@ -5,6 +5,7 @@ from typing import Optional
 
 from fastapi import Depends, FastAPI, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqladmin import Admin
@@ -38,7 +39,7 @@ async def lifespan(app: FastAPI):
     await redis.close()
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, debug=True)
 
 app.include_router(router_users)
 app.include_router(router_bookings)
@@ -76,15 +77,25 @@ admin.add_view(BookingsAdmin)
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    start_time = time.perf_counter()
-    response = await call_next(request)
-    process_time = time.perf_counter() - start_time
-    response.headers["X-Process-Time"] = str(process_time)
-    
-    logger.info('Request handling time', extra={
-        'process_time': round(process_time, 4)
-    })
-    
-    return response
+    try:
+        start_time = time.perf_counter()
+        logger.info("Processing request", extra={"url": str(request.url)})
+        response = await call_next(request)
+        process_time = time.perf_counter() - start_time
+        # response.headers["X-Process-Time"] = str(process_time)
+        
+        logger.info('Request handling time', extra={
+            'process_time': round(process_time, 4)
+        })
+        
+        return response
+
+    except Exception as e:
+        import traceback
+        logger.error(f"Unhandled exception: {e}\n{traceback.format_exc()}")
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Internal Server Error"},
+        )
 
 app.mount('/static', StaticFiles(directory='app/static'), 'static')

@@ -36,6 +36,7 @@ isort = "^6.0.0"
 pyright = "^1.1.393"
 python-json-logger = "^3.2.1"
 fastapi-versioning = "^0.10.0"
+gunicorn = "^23.0.0"
 
 
 [build-system]
